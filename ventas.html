@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ventas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<script>
+if(sessionStorage.getItem("login")!=="ok"){
+    window.location="index.html";
+}
+</script>
+
+<header>
+    <h1>Módulo de Ventas</h1>
+</header>
+
+<nav>
+    <ul class="menu">
+        <li><a href="menu.html">Inicio</a></li>
+        <li><a href="ventas.html">Ventas</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="clientes.html">Clientes</a></li>
+        <li><a href="reportes.html">Reportes</a></li>
+    </ul>
+</nav>
+
+<section class="contenedor">
+
+    <article>
+        <h2>Registrar Venta</h2>
+
+        <label>Producto</label>
+        <input type="text">
+
+        <label>Cantidad</label>
+        <input type="number">
+
+        <label>Precio</label>
+        <input type="number">
+
+        <button>Guardar Venta</button>
+    </article>
+
+    <aside>
+        <h3>Ayuda</h3>
+        <p>Aquí puedes registrar nuevas ventas del sistema.</p>
+    </aside>
+
+</section>
+
+<footer>
+    <p>Sistema POS</p>
+</footer>
+
+</body>
+</html>

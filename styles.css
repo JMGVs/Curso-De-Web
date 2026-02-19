@@ -1,0 +1,98 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI;
+}
+
+/* Layout general */
+body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:#f4f6f9;
+}
+
+/* HEADER */
+header{
+    background:#1e3c72;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+/* NAV */
+nav{
+    background:#2a5298;
+}
+
+.menu{
+    list-style:none;
+    display:flex;
+    justify-content:center;
+}
+
+.menu li{
+    margin:0 15px;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    padding:15px;
+    display:block;
+}
+
+.menu a:hover{
+    background:#1e3c72;
+}
+
+/* CONTENIDO */
+.contenedor{
+    flex:1;
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+/* ARTICLE */
+article{
+    flex:3;
+    background:white;
+    padding:20px;
+    border-radius:8px;
+}
+
+/* ASIDE */
+aside{
+    flex:1;
+    background:#e9eef5;
+    padding:20px;
+    border-radius:8px;
+}
+
+/* FOOTER */
+footer{
+    background:#1e3c72;
+    color:white;
+    text-align:center;
+    padding:10px;
+}
+
+/* LOGIN */
+.login-body{
+    justify-content:center;
+    align-items:center;
+}
+
+.login{
+    background:white;
+    padding:30px;
+    border-radius:8px;
+}
+
+input, button{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+}

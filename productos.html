@@ -3,9 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Productos</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<script>
+if(sessionStorage.getItem("login")!="ok"){
+    window.location="index.html";
+}
+</script>
+    <header>
+        <h1>Módulo de Productos</h1>
+    </header>
+
+    <nav>
+        <ul class="menu">
+            <li><a href="inicio.html">Inicio</a></li>
+            <li><a href="ventas.html">Ventas</a></li>
+            <li><a href="productos.html">Productos</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="reportes.html">Reportes</a></li>
+        </ul>
+    </nav>
+
+    <section class="contenedor">
+        <article>
+            <h2>Agregar Producto</h2>
+            <label>Nombre</label>
+            <input type="text">
+            <label>Precio</label>
+            <input type="number">
+            <label>Cantidad</label>
+            <input type="number">
+            <button>Guardar Producto</button>
+
+            <table border="1" style="margin-top:1em; width:100%;">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ejemplo</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+
+        <aside>
+            <h3>Ayuda</h3>
+            <p>Registra y visualiza los productos disponibles.</p>
+        </aside>
+    </section>
     
 </body>
 

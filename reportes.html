@@ -3,9 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reportes</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<script>
+if(sessionStorage.getItem("login")!="ok"){
+    window.location="index.html";
+}
+</script>
+    <header>
+        <h1>Módulo de Reportes</h1>
+    </header>
+
+    <nav>
+        <ul class="menu">
+            <li><a href="inicio.html">Inicio</a></li>
+            <li><a href="ventas.html">Ventas</a></li>
+            <li><a href="productos.html">Productos</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="reportes.html">Reportes</a></li>
+        </ul>
+    </nav>
+
+    <section class="contenedor">
+        <article>
+            <h2>Reportes Generales</h2>
+            <p>A continuación se muestran datos resumidos.</p>
+            <table border="1" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ventas</td>
+                        <td>Total del día</td>
+                        <td>$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+
+        <aside>
+            <h3>Consejo</h3>
+            <p>Revisa los reportes regularmente para identificar tendencias.</p>
+        </aside>
+    </section>
     
 </body>
 

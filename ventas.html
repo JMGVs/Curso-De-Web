@@ -20,7 +20,7 @@ if(sessionStorage.getItem("login")!=="ok"){
 
 <nav>
     <ul class="menu">
-        <li><a href="menu.html">Inicio</a></li>
+        <li><a href="inicio.html">Inicio</a></li>
         <li><a href="ventas.html">Ventas</a></li>
         <li><a href="productos.html">Productos</a></li>
         <li><a href="clientes.html">Clientes</a></li>
@@ -43,6 +43,26 @@ if(sessionStorage.getItem("login")!=="ok"){
         <input type="number">
 
         <button>Guardar Venta</button>
+        
+        <!-- tabla simple para mostrar ventas recientes -->
+        <table border="1" style="margin-top:1em; width:100%;">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ejemplo</td>
+                    <td>1</td>
+                    <td>100</td>
+                    <td>100</td>
+                </tr>
+            </tbody>
+        </table>
     </article>
 
     <aside>

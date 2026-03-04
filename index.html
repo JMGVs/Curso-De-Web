@@ -2,29 +2,38 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="login-body">
+<body class="login-body d-flex flex-column">
 
-<section class="login">
-    <article>
-        <h2>Punto de Venta Actualizado 20/02</h2>
+<div class="container-fluid d-flex flex-column justify-content-center align-items-center flex-grow-1">
+    <div class="card shadow-lg" style="max-width: 400px; width: 100%;">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Punto de Venta Actualizado 20/02</h2>
 
-        <form id="loginForm">
-            <input type="text" id="usuario" placeholder="Usuario" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">Entrar</button>
-            <p id="error"></p>
-        </form>
-    </article>
-</section>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <input type="text" id="usuario" class="form-control" placeholder="Usuario" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                <p id="error" class="text-danger mt-3 text-center"></p>
+            </form>
+        </div>
+    </div>
+</div>
 
-<footer>
-    <p>Sistema Punto de Venta © 2026</p>
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <p class="mb-0">Sistema Punto de Venta © 2026</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.getElementById("loginForm").addEventListener("submit", function(e){
     e.preventDefault();

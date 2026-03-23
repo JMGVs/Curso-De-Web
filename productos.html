@@ -74,6 +74,7 @@ if(sessionStorage.getItem("login")!=="ok"){
                                 <th>Nombre</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tablaProductos"></tbody>
@@ -87,81 +88,212 @@ if(sessionStorage.getItem("login")!=="ok"){
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Ayuda</h3>
-                    <p class="card-text">Registra y visualiza los productos disponibles.</p>
+                    <p class="card-text">Registra y visualiza los productos disponibles. Puedes editar o eliminar cualquier producto.</p>
                 </div>
             </div>
         </aside>
     </div>
 </section>
+
+<!-- Modal para editar producto -->
+<div class="modal fade" id="editarProductoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarProducto">
+                    <input type="hidden" id="editarProductoId">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" id="editarNombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Precio</label>
+                        <input type="number" id="editarPrecio" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" id="editarCantidad" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
     
 <footer class="bg-dark text-white text-center py-3 mt-auto">
     <p class="mb-0">Derechos reservados ©</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===============================
-// BASE DE DATOS SIMULADA
+// CRUD DE PRODUCTOS
 // ===============================
-let productos = JSON.parse(localStorage.getItem("productos")) || [
-    {nombre: "Sabritas Original", precio: 18, cantidad: 20},
-    {nombre: "Sabritas Flamin Hot", precio: 20, cantidad: 15},
-    {nombre: "Doritos Nacho", precio: 17, cantidad: 25},
-    {nombre: "Cheetos", precio: 16, cantidad: 18},
-    {nombre: "Galletas Oreo", precio: 15, cantidad: 30},
-    {nombre: "Galletas Marías", precio: 12, cantidad: 40},
-    {nombre: "Coca-Cola 600ml", precio: 18, cantidad: 22},
-    {nombre: "Pepsi 600ml", precio: 17, cantidad: 20},
-    {nombre: "Fanta Naranja", precio: 16, cantidad: 15},
-    {nombre: "Agua Bonafont", precio: 12, cantidad: 35}
-];
 
-// Guardar si es la primera vez
-localStorage.setItem("productos", JSON.stringify(productos));
+const KEY_PRODUCTOS = 'productos';
 
-// ===============================
-// MOSTRAR PRODUCTOS
-// ===============================
-function mostrarProductos() {
-    let tabla = document.getElementById("tablaProductos");
-    tabla.innerHTML = "";
+// Obtener productos del localStorage
+function obtenerProductos() {
+    const datos = localStorage.getItem(KEY_PRODUCTOS);
+    let productos = datos ? JSON.parse(datos) : [];
+    
+    // Migrar productos viejos que no tengan ID
+    productos = productos.map((p, index) => {
+        if (!p.id) {
+            return { ...p, id: index + Date.now() };
+        }
+        return p;
+    });
+    
+    // Guardar los cambios de migración
+    if (productos.some(p => !p.id)) {
+        localStorage.setItem(KEY_PRODUCTOS, JSON.stringify(productos));
+    }
+    
+    return productos;
+}
 
+// Guardar productos en localStorage
+function guardarProductos(productos) {
+    localStorage.setItem(KEY_PRODUCTOS, JSON.stringify(productos));
+}
+
+// Crear nuevo producto
+document.getElementById('formProducto').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const nombre = document.getElementById('nombre').value.trim();
+    const precio = parseFloat(document.getElementById('precio').value);
+    const cantidad = parseInt(document.getElementById('cantidad').value);
+    
+    if (!nombre || precio <= 0 || cantidad < 0) {
+        alert('Por favor completa todos los campos correctamente');
+        return;
+    }
+    
+    const productos = obtenerProductos();
+    const nuevoProducto = {
+        id: Date.now(),
+        nombre,
+        precio,
+        cantidad,
+        fechaCreacion: new Date().toLocaleDateString()
+    };
+    
+    productos.push(nuevoProducto);
+    guardarProductos(productos);
+    
+    document.getElementById('formProducto').reset();
+    cargarProductos();
+    alert('Producto agregado correctamente');
+});
+
+// Cargar y mostrar productos
+function cargarProductos() {
+    const productos = obtenerProductos();
+    const tabla = document.getElementById('tablaProductos');
+    tabla.innerHTML = '';
+    
+    if (productos.length === 0) {
+        tabla.innerHTML = '<tr><td colspan="4" class="text-center">No hay productos registrados</td></tr>';
+        return;
+    }
+    
     productos.forEach(producto => {
-        tabla.innerHTML += `
-            <tr>
-                <td>${producto.nombre}</td>
-                <td>$${producto.precio}</td>
-                <td>${producto.cantidad}</td>
-            </tr>
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${producto.nombre}</td>
+            <td>$${producto.precio.toFixed(2)}</td>
+            <td>${producto.cantidad}</td>
+            <td>
+                <button class="btn btn-sm btn-warning" onclick="abrirEditarProducto(${producto.id})">
+                    ✎ Editar
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="eliminarProducto(${producto.id})">
+                    🗑 Eliminar
+                </button>
+            </td>
         `;
+        tabla.appendChild(fila);
     });
 }
 
-// ===============================
-// AGREGAR PRODUCTO
-// ===============================
-document.getElementById("formProducto").addEventListener("submit", function(e) {
+// Abrir modal para editar
+function abrirEditarProducto(id) {
+    const productos = obtenerProductos();
+    const producto = productos.find(p => p.id === id);
+    
+    if (producto) {
+        document.getElementById('editarProductoId').value = String(producto.id);
+        document.getElementById('editarNombre').value = producto.nombre;
+        document.getElementById('editarPrecio').value = producto.precio;
+        document.getElementById('editarCantidad').value = producto.cantidad;
+        
+        const modal = new bootstrap.Modal(document.getElementById('editarProductoModal'));
+        modal.show();
+    }
+}
+
+// Guardar cambios del producto editado
+document.getElementById('formEditarProducto').addEventListener('submit', (e) => {
     e.preventDefault();
-
-    let nombre = document.getElementById("nombre").value;
-    let precio = parseFloat(document.getElementById("precio").value);
-    let cantidad = parseInt(document.getElementById("cantidad").value);
-
-    productos.push({nombre, precio, cantidad});
-
-    localStorage.setItem("productos", JSON.stringify(productos));
-
-    mostrarProductos();
-
-    this.reset();
+    
+    const idValue = document.getElementById('editarProductoId').value;
+    const nombre = document.getElementById('editarNombre').value.trim();
+    const precio = parseFloat(document.getElementById('editarPrecio').value);
+    const cantidad = parseInt(document.getElementById('editarCantidad').value);
+    
+    if (!nombre || precio <= 0 || cantidad < 0) {
+        alert('Por favor completa todos los campos correctamente');
+        return;
+    }
+    
+    let productos = obtenerProductos();
+    const productoIndex = productos.findIndex(p => String(p.id) === String(idValue));
+    
+    if (productoIndex !== -1) {
+        productos[productoIndex] = {
+            ...productos[productoIndex],
+            nombre,
+            precio,
+            cantidad
+        };
+        
+        guardarProductos(productos);
+        cargarProductos();
+        
+        bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')).hide();
+        alert('Producto actualizado correctamente');
+    } else {
+        alert('Producto no encontrado');
+    }
 });
 
-// ===============================
-// INICIALIZAR
-// ===============================
-mostrarProductos();
-</script>
+// Eliminar producto
+function eliminarProducto(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+        let productos = obtenerProductos();
+        const productosAntes = productos.length;
+        productos = productos.filter(p => p.id !== id);
+        
+        if (productos.length < productosAntes) {
+            guardarProductos(productos);
+            cargarProductos();
+            alert('Producto eliminado correctamente');
+        } else {
+            alert('No se pudo eliminar el producto');
+        }
+    }
+}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+// Cargar productos al abrir la página
+cargarProductos();
+</script>
 
 </body>
 </html>

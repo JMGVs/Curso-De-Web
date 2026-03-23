@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
 
 <script>
@@ -30,7 +30,7 @@ if(sessionStorage.getItem("login")!=="ok"){
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="inicio.html">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link" href="ventas.html">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
+                <li class="nav-item"><a class="nav-link active" href="productos.html">Productos</a></li>
                 <li class="nav-item"><a class="nav-link" href="clientes.html">Clientes</a></li>
                 <li class="nav-item"><a class="nav-link" href="reportes.html">Reportes</a></li>
             </ul>
@@ -41,27 +41,30 @@ if(sessionStorage.getItem("login")!=="ok"){
 <section class="container flex-grow-1 py-5">
     <div class="row">
         <article class="col-md-8">
+
+            <!-- FORMULARIO -->
             <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title mb-4">Agregar Producto</h2>
-                    <form>
+                    <form id="formProducto">
                         <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" id="nombre" class="form-control">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="nombre" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="precio" class="form-label">Precio</label>
-                            <input type="number" id="precio" class="form-control" step="0.01">
+                            <label class="form-label">Precio</label>
+                            <input type="number" id="precio" class="form-control" step="0.01" required>
                         </div>
                         <div class="mb-3">
-                            <label for="cantidad" class="form-label">Cantidad</label>
-                            <input type="number" id="cantidad" class="form-control">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" id="cantidad" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar Producto</button>
                     </form>
                 </div>
             </div>
 
+            <!-- TABLA -->
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Productos Disponibles</h5>
@@ -73,16 +76,11 @@ if(sessionStorage.getItem("login")!=="ok"){
                                 <th>Cantidad</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ejemplo</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="tablaProductos"></tbody>
                     </table>
                 </div>
             </div>
+
         </article>
 
         <aside class="col-md-4">
@@ -100,6 +98,70 @@ if(sessionStorage.getItem("login")!=="ok"){
     <p class="mb-0">Derechos reservados ©</p>
 </footer>
 
+<script>
+// ===============================
+// BASE DE DATOS SIMULADA
+// ===============================
+let productos = JSON.parse(localStorage.getItem("productos")) || [
+    {nombre: "Sabritas Original", precio: 18, cantidad: 20},
+    {nombre: "Sabritas Flamin Hot", precio: 20, cantidad: 15},
+    {nombre: "Doritos Nacho", precio: 17, cantidad: 25},
+    {nombre: "Cheetos", precio: 16, cantidad: 18},
+    {nombre: "Galletas Oreo", precio: 15, cantidad: 30},
+    {nombre: "Galletas Marías", precio: 12, cantidad: 40},
+    {nombre: "Coca-Cola 600ml", precio: 18, cantidad: 22},
+    {nombre: "Pepsi 600ml", precio: 17, cantidad: 20},
+    {nombre: "Fanta Naranja", precio: 16, cantidad: 15},
+    {nombre: "Agua Bonafont", precio: 12, cantidad: 35}
+];
+
+// Guardar si es la primera vez
+localStorage.setItem("productos", JSON.stringify(productos));
+
+// ===============================
+// MOSTRAR PRODUCTOS
+// ===============================
+function mostrarProductos() {
+    let tabla = document.getElementById("tablaProductos");
+    tabla.innerHTML = "";
+
+    productos.forEach(producto => {
+        tabla.innerHTML += `
+            <tr>
+                <td>${producto.nombre}</td>
+                <td>$${producto.precio}</td>
+                <td>${producto.cantidad}</td>
+            </tr>
+        `;
+    });
+}
+
+// ===============================
+// AGREGAR PRODUCTO
+// ===============================
+document.getElementById("formProducto").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let nombre = document.getElementById("nombre").value;
+    let precio = parseFloat(document.getElementById("precio").value);
+    let cantidad = parseInt(document.getElementById("cantidad").value);
+
+    productos.push({nombre, precio, cantidad});
+
+    localStorage.setItem("productos", JSON.stringify(productos));
+
+    mostrarProductos();
+
+    this.reset();
+});
+
+// ===============================
+// INICIALIZAR
+// ===============================
+mostrarProductos();
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

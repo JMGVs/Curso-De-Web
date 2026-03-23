@@ -65,3 +65,22 @@ button:hover, .btn:hover, a:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+.producto-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background-color: #f0f0f0;
+}
+
+/* Hace que todas las cards sean iguales */
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mantiene alineado el contenido */
+.card-body {
+    margin-top: auto;
+}
+

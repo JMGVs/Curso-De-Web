@@ -1,130 +1,462 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pago con Tarjeta</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela de Pago</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .metodo-pago {
+            cursor: pointer;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metodo-pago:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+
+        .metodo-pago.activo {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .metodo-pago h4 {
+            margin: 0;
+            color: #0d6efd;
+        }
+
+        .metodo-pago-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .form-pago {
+            display: none;
+        }
+
+        .form-pago.activo {
+            display: block;
+        }
+
+        .resumen-carrito {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-<script>
-if(sessionStorage.getItem("login")!=="ok"){
-    window.location="index.html";
-}
-</script>
+    <script>
+        if(sessionStorage.getItem("login")!=="ok"){
+            window.location="index.html";
+        }
+    </script>
 
-<header class="bg-success text-white py-4">
-    <div class="container">
-        <h1 class="mb-0">Pago con Tarjeta</h1>
-    </div>
-</header>
+    <header class="bg-success text-white py-4">
+        <div class="container">
+            <h1 class="mb-0">Pasarela de Pago</h1>
+        </div>
+    </header>
 
-<section class="container flex-grow-1 py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    <section class="container flex-grow-1 py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
 
-            <div class="card shadow">
-                <div class="card-body">
-
-                    <h3 class="mb-4 text-center">Ingrese datos de la tarjeta</h3>
-
-                    <h5 class="text-center mb-3">
-                        Total a pagar: <span id="totalPagar" class="text-success">$0.00</span>
-                    </h5>
-
-                    <form id="formPago">
-
-                        <div class="mb-3">
-                            <label class="form-label">Número de tarjeta</label>
-                            <input type="text" id="tarjeta" class="form-control" maxlength="16" required>
+                <!-- RESUMEN DEL CARRITO -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Resumen de Compra</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resumenCarrito"></tbody>
+                            </table>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del titular</label>
-                            <input type="text" id="titular" class="form-control" required>
+                        <div class="row mt-3 border-top pt-3">
+                            <div class="col-md-8">
+                                <h6>Total a Pagar:</h6>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <h4 class="text-success" id="totalAPagar">$0.00</h4>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SELECCIÓN DE MÉTODO DE PAGO -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Selecciona forma de pago</h5>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Expiración</label>
-                                <input type="month" id="expiracion" class="form-control" required>
+                                <div class="metodo-pago activo" onclick="seleccionarMetodo('efectivo')">
+                                    <div class="metodo-pago-icon">💵</div>
+                                    <h4>Efectivo</h4>
+                                    <p class="text-muted mb-0">Pago en efectivo</p>
+                                </div>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">CVV</label>
-                                <input type="password" id="cvv" class="form-control" maxlength="3" required>
+                                <div class="metodo-pago" onclick="seleccionarMetodo('tarjeta')">
+                                    <div class="metodo-pago-icon">💳</div>
+                                    <h4>Tarjeta</h4>
+                                    <p class="text-muted mb-0">Débito o Crédito</p>
+                                </div>
                             </div>
                         </div>
-
-                        <button type="submit" class="btn btn-success w-100">Pagar</button>
-
-                        <p id="mensaje" class="text-center mt-3"></p>
-
-                    </form>
-
+                    </div>
                 </div>
+
+                <!-- FORMULARIO DE EFECTIVO -->
+                <div id="formEfectivo" class="card form-pago activo mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Pago en Efectivo</h5>
+                        <form id="efectivoForm">
+                            <div class="mb-3">
+                                <label class="form-label">Monto Recibido</label>
+                                <input type="number" id="montoRecibido" class="form-control form-control-lg" 
+                                       step="0.01" placeholder="0.00" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Cambio</label>
+                                <input type="text" id="cambio" class="form-control form-control-lg" 
+                                       readonly value="$0.00" style="background-color: #f8f9fa;">
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 btn-lg">
+                                Confirmar Pago Efectivo
+                            </button>
+
+                            <p id="mensajeEfectivo" class="text-center mt-3"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO DE TARJETA -->
+                <div id="formTarjeta" class="card form-pago mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Pago con Tarjeta</h5>
+                        <form id="tarjetaForm">
+                            <div class="mb-3">
+                                <label class="form-label">Número de Tarjeta</label>
+                                <input type="text" id="numeroTarjeta" class="form-control form-control-lg" 
+                                       maxlength="16" placeholder="0000 0000 0000 0000" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Nombre del Titular</label>
+                                <input type="text" id="nomTitular" class="form-control form-control-lg" 
+                                       placeholder="Nombre Completo" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Mes de Expiración</label>
+                                    <input type="month" id="mesExpiracion" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="password" id="cvvTarjeta" class="form-control" 
+                                           maxlength="3" placeholder="***" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 btn-lg">
+                                Confirmar Pago Tarjeta
+                            </button>
+
+                            <p id="mensajeTarjeta" class="text-center mt-3"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- BOTÓN VOLVER -->
+                <div class="mt-4 text-center">
+                    <a href="ventas.html" class="btn btn-secondary btn-lg">Volver al Carrito</a>
+                </div>
+
             </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
-<footer class="bg-dark text-white text-center py-3 mt-auto">
-    <p class="mb-0">Sistema POS</p>
-</footer>
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <p class="mb-0">Sistema POS © 2026</p>
+    </footer>
 
-<script>
-// ===============================
-// OBTENER TOTAL DE LA ÚLTIMA VENTA
-// ===============================
-let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
-let total = 0;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ===============================
+        // CONSTANTES
+        // ===============================
+        const KEY_CARRITO = 'carrito';
+        const KEY_VENTAS = 'ventas';
 
-if(ventas.length > 0){
-    total = ventas[ventas.length - 1].total;
-}
+        let metodoPagoSeleccionado = 'efectivo';
 
-document.getElementById("totalPagar").textContent = "$" + total.toFixed(2);
+        // ===============================
+        // FUNCIONES DE CARRITO Y VENTAS
+        // ===============================
+        function obtenerCarrito() {
+            return JSON.parse(localStorage.getItem(KEY_CARRITO)) || [];
+        }
 
-// ===============================
-// VALIDACIÓN Y SIMULACIÓN DE PAGO
-// ===============================
-document.getElementById("formPago").addEventListener("submit", function(e){
-    e.preventDefault();
+        function obtenerVentas() {
+            const datos = localStorage.getItem(KEY_VENTAS);
+            return datos ? JSON.parse(datos) : [];
+        }
 
-    let tarjeta = document.getElementById("tarjeta").value;
-    let titular = document.getElementById("titular").value;
-    let expiracion = document.getElementById("expiracion").value;
-    let cvv = document.getElementById("cvv").value;
-    let mensaje = document.getElementById("mensaje");
+        function guardarVentas(ventas) {
+            localStorage.setItem(KEY_VENTAS, JSON.stringify(ventas));
+        }
 
-    // Validaciones básicas
-    if(tarjeta.length !== 16){
-        mensaje.textContent = "Número de tarjeta inválido";
-        mensaje.className = "text-danger";
-        return;
-    }
+        function calcularTotal() {
+            let carrito = obtenerCarrito();
+            return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        }
 
-    if(cvv.length !== 3){
-        mensaje.textContent = "CVV inválido";
-        mensaje.className = "text-danger";
-        return;
-    }
+        // ===============================
+        // MOSTRAR RESUMEN DEL CARRITO
+        // ===============================
+        function mostrarResumenCarrito() {
+            let carrito = obtenerCarrito();
+            let tabla = document.getElementById('resumenCarrito');
+            tabla.innerHTML = '';
 
-    // Simulación de pago exitoso
-    mensaje.textContent = "✅ Pago realizado con éxito";
-    mensaje.className = "text-success";
+            if(carrito.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="4" class="text-center text-danger">El carrito está vacío</td></tr>';
+                document.getElementById('totalAPagar').textContent = '$0.00';
+                return;
+            }
 
-    // Opcional: limpiar ventas (como ticket pagado)
-    // localStorage.removeItem("ventas");
+            carrito.forEach(item => {
+                let fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${item.nombre}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${item.precio.toFixed(2)}</td>
+                    <td><strong>$${(item.precio * item.cantidad).toFixed(2)}</strong></td>
+                `;
+                tabla.appendChild(fila);
+            });
 
-    setTimeout(()=>{
-        window.location = "ventas.html";
-    }, 2000);
-});
-</script>
+            let total = calcularTotal();
+            document.getElementById('totalAPagar').textContent = '$' + total.toFixed(2);
+        }
+
+        // ===============================
+        // SELECCIONAR MÉTODO DE PAGO
+        // ===============================
+        function seleccionarMetodo(metodo) {
+            metodoPagoSeleccionado = metodo;
+
+            // Actualizar estilos de botones
+            document.querySelectorAll('.metodo-pago').forEach(el => {
+                el.classList.remove('activo');
+            });
+            if(metodo === 'efectivo') {
+                document.querySelectorAll('.metodo-pago')[0].classList.add('activo');
+            } else {
+                document.querySelectorAll('.metodo-pago')[1].classList.add('activo');
+            }
+
+            // Mostrar/ocultar formularios
+            document.querySelectorAll('.form-pago').forEach(el => {
+                el.classList.remove('activo');
+            });
+
+            if(metodo === 'efectivo') {
+                document.getElementById('formEfectivo').classList.add('activo');
+            } else {
+                document.getElementById('formTarjeta').classList.add('activo');
+            }
+        }
+
+        // ===============================
+        // CALCULAR CAMBIO (EFECTIVO)
+        // ===============================
+        function actualizarCambio() {
+            let totalAPagar = calcularTotal();
+            let montoRecibido = parseFloat(document.getElementById('montoRecibido').value) || 0;
+            let cambio = montoRecibido - totalAPagar;
+            
+            let campoCambio = document.getElementById('cambio');
+            
+            if(!campoCambio) return; // Si no existe el campo, salir
+            
+            if(montoRecibido === 0 || isNaN(montoRecibido)) {
+                campoCambio.value = '$0.00';
+                campoCambio.style.color = 'inherit';
+            } else if(cambio < 0) {
+                let falta = Math.abs(cambio);
+                campoCambio.value = 'FALTA: $' + falta.toFixed(2);
+                campoCambio.style.color = 'red';
+            } else {
+                campoCambio.value = '$' + cambio.toFixed(2);
+                campoCambio.style.color = 'green';
+            }
+        }
+
+        // ===============================
+        // PROCESAR PAGO EN EFECTIVO
+        // ===============================
+        document.getElementById('efectivoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let total = calcularTotal();
+            let monto = parseFloat(document.getElementById('montoRecibido').value);
+            let mensaje = document.getElementById('mensajeEfectivo');
+
+            if(!monto || isNaN(monto)) {
+                mensaje.textContent = '❌ Ingresa un monto válido';
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            if(monto < total) {
+                mensaje.textContent = '❌ Monto insuficiente. Falta: $' + (total - monto).toFixed(2);
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            // PROCESAR VENTA EXITOSA
+            procesarVentaExitosa('Efectivo');
+        });
+
+        // ===============================
+        // PROCESAR PAGO CON TARJETA
+        // ===============================
+        document.getElementById('tarjetaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let numeroTarjeta = document.getElementById('numeroTarjeta').value;
+            let nomTitular = document.getElementById('nomTitular').value;
+            let mesExpiracion = document.getElementById('mesExpiracion').value;
+            let cvv = document.getElementById('cvvTarjeta').value;
+            let mensaje = document.getElementById('mensajeTarjeta');
+
+            // Validaciones básicas
+            if(numeroTarjeta.length !== 16 || isNaN(numeroTarjeta)) {
+                mensaje.textContent = '❌ Número de tarjeta inválido (16 dígitos)';
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            if(!nomTitular.trim()) {
+                mensaje.textContent = '❌ Ingresa el nombre del titular';
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            if(!mesExpiracion) {
+                mensaje.textContent = '❌ Selecciona fecha de expiración';
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            if(cvv.length !== 3 || isNaN(cvv)) {
+                mensaje.textContent = '❌ CVV inválido (3 dígitos)';
+                mensaje.className = 'text-danger';
+                return;
+            }
+
+            // PROCESAR VENTA EXITOSA
+            procesarVentaExitosa('Tarjeta');
+        });
+
+        // ===============================
+        // PROCESAR VENTA EXITOSA
+        // ===============================
+        function procesarVentaExitosa(tipoMetodo) {
+            let carrito = obtenerCarrito();
+            let ventas = obtenerVentas();
+            let total = calcularTotal();
+
+            if(carrito.length === 0) {
+                alert('El carrito está vacío');
+                return;
+            }
+
+            // Registrar cada producto del carrito como una venta
+            carrito.forEach(item => {
+                ventas.push({
+                    id: Date.now() + Math.random(),
+                    producto: item.nombre,
+                    cantidad: item.cantidad,
+                    precio: item.precio,
+                    total: item.precio * item.cantidad,
+                    fecha: new Date().toLocaleString(),
+                    metodoPago: tipoMetodo
+                });
+            });
+
+            guardarVentas(ventas);
+
+            // Mostrar confirmación
+            let mensaje = metodoPagoSeleccionado === 'efectivo' 
+                ? document.getElementById('mensajeEfectivo') 
+                : document.getElementById('mensajeTarjeta');
+
+            mensaje.innerHTML = `
+                <div class="alert alert-success">
+                    <h5>✅ Pago Realizado Exitosamente</h5>
+                    <p>Método: ${tipoMetodo}</p>
+                    <p><strong>Total: $${total.toFixed(2)}</strong></p>
+                    <p>Redirigiendo a ventas...</p>
+                </div>
+            `;
+
+            // Limpiar carrito
+            localStorage.removeItem(KEY_CARRITO);
+
+            // Redirigir
+            setTimeout(() => {
+                window.location = 'ventas.html';
+            }, 3000);
+        }
+
+        // ===============================
+        // INICIALIZACIÓN
+        // ===============================
+        document.addEventListener('DOMContentLoaded', function() {
+            mostrarResumenCarrito();
+            
+            // Asignar evento al input de monto recibido
+            let montoInput = document.getElementById('montoRecibido');
+            if(montoInput) {
+                montoInput.addEventListener('input', actualizarCambio);
+                montoInput.addEventListener('change', actualizarCambio);
+                montoInput.addEventListener('keyup', actualizarCambio);
+                // Llamar inicialmente para mostrar el valor por defecto
+                actualizarCambio();
+            }
+            
+            // Verificar si hay carrito vacío
+            let carrito = obtenerCarrito();
+            if(carrito.length === 0) {
+                alert('El carrito está vacío. Serás redirigido a ventas.');
+                window.location = 'ventas.html';
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -1,482 +1,459 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ventas</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-<script>
-if(sessionStorage.getItem("login")!=="ok"){
-    window.location="index.html";
-}
-</script>
+    <script>
+        if(sessionStorage.getItem("login")!=="ok"){
+            window.location="index.html";
+        }
+    </script>
 
-<header class="bg-primary text-white py-4">
-    <div class="container">
-        <h1 class="mb-0">Módulo de Ventas</h1>
-    </div>
-</header>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="inicio.html">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link active" href="ventas.html">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
-            </ul>
+    <header class="bg-primary text-white py-4">
+        <div class="container">
+            <h1 class="mb-0">Módulo de Ventas</h1>
         </div>
-    </div>
-</nav>
+    </header>
 
-<section class="container flex-grow-1 py-5">
-    <div class="row">
-        <article class="col-md-8">
-
-            <!-- FORMULARIO -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title mb-4">Registrar Venta</h2>
-
-                    <form id="formVenta">
-
-                        <div class="mb-3">
-                            <label class="form-label">Producto</label>
-                            <select id="producto" class="form-control"></select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Cantidad</label>
-                            <input type="number" id="cantidad" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Precio</label>
-                            <input type="number" id="precio" class="form-control" step="0.01" readonly>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Guardar Venta</button>
-                    </form>
-
-                    <!-- BOTÓN DE PAGO (OCULTO AL INICIO) -->
-                    <a href="pago.html" id="btnPagar" class="btn btn-success mt-3 d-none">
-                        Ir a pagar
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- TABLA -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Ventas Registradas</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                    <th>Total</th>
-                                    <th>Fecha</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaVentas"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resumen de Ventas -->
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">Resumen del Día</h5>
-                    <p><strong>Total de Ventas:</strong> <span id="totalVentas">$0.00</span></p>
-                    <p><strong>Cantidad de Ventas:</strong> <span id="cantidadVentas">0</span></p>
-                </div>
-            </div>
-
-        </article>
-    </div>
-</section>
-
-<!-- Modal para editar venta -->
-<div class="modal fade" id="editarVentaModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Venta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="formEditarVenta">
-                    <input type="hidden" id="editarVentaId">
-                    <div class="mb-3">
-                        <label class="form-label">Producto</label>
-                        <input type="text" id="editarProducto" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Cantidad</label>
-                        <input type="number" id="editarCantidad" class="form-control" min="1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Precio Unitario</label>
-                        <input type="number" id="editarPrecioUnitario" class="form-control" step="0.01" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Total</label>
-                        <input type="number" id="editarTotal" class="form-control" step="0.01" readonly>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="inicio.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="ventas.html">Ventas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
+                </ul>
             </div>
         </div>
-    </div>
-</div>
+    </nav>
 
-<footer class="bg-dark text-white text-center py-3 mt-auto">
-    <p class="mb-0">Sistema POS</p>
-</footer>
+    <section class="container flex-grow-1 py-5">
+        <div class="row">
+            <article class="col-md-8">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-// ===============================
-// CRUD DE VENTAS
-// ===============================
+                <!-- FORMULARIO DE COMPRA -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Agregar productos al carrito</h2>
+                        
+                        <!-- Alerta si no hay productos -->
+                        <div id="alertaNoProductos" class="alert alert-warning d-none" role="alert">
+                            <h4 class="alert-heading">¡No hay productos registrados!</h4>
+                            <p>No se pueden realizar ventas hasta que agregues productos al sistema.</p>
+                            <hr>
+                            <p class="mb-0">
+                                <a href="productos.html" class="alert-link">Ir a la sección de Productos</a> para agregar productos.
+                            </p>
+                        </div>
 
-const KEY_VENTAS = 'ventas';
-const KEY_PRODUCTOS = 'productos';
+                        <form id="formVenta">
+                            <div class="mb-3">
+                                <label class="form-label">Producto</label>
+                                <select id="producto" class="form-control" required></select>
+                            </div>
 
-// Obtener ventas del localStorage
-function obtenerVentas() {
-    const datos = localStorage.getItem(KEY_VENTAS);
-    let ventas = datos ? JSON.parse(datos) : [];
-    
-    // Migrar ventas viejas que no tengan ID
-    ventas = ventas.map((v, index) => {
-        if (!v.id) {
-            return { ...v, id: index + Date.now() };
+                            <div class="mb-3">
+                                <label class="form-label">Cantidad</label>
+                                <input type="number" id="cantidad" class="form-control" min="1" value="1" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Precio Unitario</label>
+                                <input type="number" id="precio" class="form-control" step="0.01" readonly>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CARRITO DE COMPRA -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Carrito de Compra</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Total</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCarrito"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Resumen del carrito -->
+                        <div class="row mt-4 border-top pt-3">
+                            <div class="col-md-8">
+                                <h5>Total del Carrito:</h5>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <h4 class="text-success" id="totalCarrito">$0.00</h4>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="mt-4">
+                            <button type="button" id="btnLimpiarCarrito" class="btn btn-warning">Limpiar Carrito</button>
+                            <a href="pago.html" id="btnPagar" class="btn btn-success float-end d-none">
+                                Proceder al Pago
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA DE VENTAS COMPLETADAS -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Ventas Registradas</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Total</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaVentas"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de Ventas -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Resumen del Día</h5>
+                        <p><strong>Total de Ventas:</strong> <span id="totalVentas">$0.00</span></p>
+                        <p><strong>Cantidad de Ventas:</strong> <span id="cantidadVentas">0</span></p>
+                    </div>
+                </div>
+
+            </article>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <p class="mb-0">Sistema POS</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ===============================
+        // CONSTANTES Y LLAVES DE LOCALSTORAGE
+        // ===============================
+        const KEY_PRODUCTOS = 'productos';
+        const KEY_CARRITO = 'carrito';
+        const KEY_VENTAS = 'ventas';
+
+        // ===============================
+        // FUNCIONES DE CARRITO
+        // ===============================
+        function obtenerCarrito() {
+            const datos = localStorage.getItem(KEY_CARRITO);
+            return datos ? JSON.parse(datos) : [];
         }
-        return v;
-    });
-    
-    // Guardar los cambios de migración
-    if (ventas.some(v => !v.id)) {
-        localStorage.setItem(KEY_VENTAS, JSON.stringify(ventas));
-    }
-    
-    return ventas;
-}
-
-// Guardar ventas en localStorage
-function guardarVentas(ventas) {
-    localStorage.setItem(KEY_VENTAS, JSON.stringify(ventas));
-}
-
-// Obtener productos del localStorage
-function obtenerProductos() {
-    const datos = localStorage.getItem(KEY_PRODUCTOS);
-    let productos = datos ? JSON.parse(datos) : [];
-    
-    // Migrar productos viejos que no tengan ID
-    productos = productos.map((p, index) => {
-        if (!p.id) {
-            return { ...p, id: index + Date.now() };
-        }
-        return p;
-    });
-    
-    // Guardar los cambios de migración
-    if (productos.some(p => !p.id)) {
-        localStorage.setItem(KEY_PRODUCTOS, JSON.stringify(productos));
-    }
-    
-    return productos;
-}
-
-// Guardar productos en localStorage
-function guardarProductos(productos) {
-    localStorage.setItem(KEY_PRODUCTOS, JSON.stringify(productos));
-}
-
-// ===============================
-// LLENAR SELECT DE PRODUCTOS
-// ===============================
-function cargarProductos() {
-    const productos = obtenerProductos();
-    const select = document.getElementById("producto");
-    select.innerHTML = '<option value="">-- Selecciona un producto --</option>';
-
-    if (productos.length === 0) {
-        select.innerHTML += '<option disabled>No hay productos registrados</option>';
-        return;
-    }
-
-    productos.forEach((prod) => {
-        select.innerHTML += `<option value="${prod.id}" data-precio="${prod.precio}" data-cantidad="${prod.cantidad}">
-            ${prod.nombre} (Stock: ${prod.cantidad})
-        </option>`;
-    });
-
-    actualizarPrecio();
-}
-
-// ===============================
-// ACTUALIZAR PRECIO AUTOMÁTICO
-// ===============================
-function actualizarPrecio() {
-    const select = document.getElementById("producto");
-    const precioInput = document.getElementById("precio");
-    const option = select.options[select.selectedIndex];
-    
-    if (option && option.dataset.precio) {
-        precioInput.value = option.dataset.precio;
-    } else {
-        precioInput.value = 0;
-    }
-}
-
-document.getElementById("producto").addEventListener("change", actualizarPrecio);
-
-// ===============================
-// REGISTRAR VENTA
-// ===============================
-document.getElementById("formVenta").addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const select = document.getElementById("producto");
-    const productoId = parseInt(select.value);
-    const cantidad = parseInt(document.getElementById("cantidad").value);
-    const precio = parseFloat(document.getElementById("precio").value);
-
-    if (!productoId) {
-        alert('Por favor selecciona un producto');
-        return;
-    }
-
-    if (cantidad <= 0) {
-        alert('La cantidad debe ser mayor a 0');
-        return;
-    }
-
-    const productos = obtenerProductos();
-    const producto = productos.find(p => p.id === productoId);
-
-    if (!producto) {
-        alert('Producto no encontrado');
-        return;
-    }
-
-    if (cantidad > producto.cantidad) {
-        alert(`No hay suficiente stock. Stock disponible: ${producto.cantidad}`);
-        return;
-    }
-
-    const total = cantidad * precio;
-    const ventas = obtenerVentas();
-
-    // Crear nueva venta
-    const nuevaVenta = {
-        id: Date.now(),
-        productoId: producto.id,
-        producto: producto.nombre,
-        cantidad,
-        precio,
-        total,
-        fecha: new Date().toLocaleString(),
-        estado: 'completada'
-    };
-
-    ventas.push(nuevaVenta);
-    guardarVentas(ventas);
-
-    // Restar del inventario
-    producto.cantidad -= cantidad;
-    guardarProductos(productos);
-
-    // Mostrar datos
-    mostrarVentas();
-    cargarProductos();
-
-    document.getElementById("formVenta").reset();
-    alert('Venta registrada correctamente');
-});
-
-// ===============================
-// MOSTRAR VENTAS
-// ===============================
-function mostrarVentas() {
-    const ventas = obtenerVentas();
-    const tabla = document.getElementById("tablaVentas");
-    tabla.innerHTML = '';
-
-    if (ventas.length === 0) {
-        tabla.innerHTML = '<tr><td colspan="6" class="text-center">No hay ventas registradas</td></tr>';
-        actualizarResumen();
-        return;
-    }
-
-    let totalVentas = 0;
-
-    ventas.forEach(venta => {
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td>${venta.producto}</td>
-            <td>${venta.cantidad}</td>
-            <td>$${venta.precio.toFixed(2)}</td>
-            <td>$${venta.total.toFixed(2)}</td>
-            <td>${venta.fecha}</td>
-            <td>
-                <button class="btn btn-sm btn-warning" onclick="abrirEditarVenta(${venta.id})">
-                    ✎ Editar
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="eliminarVenta(${venta.id})">
-                    🗑 Cancelar
-                </button>
-            </td>
-        `;
-        tabla.appendChild(fila);
-        totalVentas += venta.total;
-    });
-
-    actualizarResumen();
-}
-
-// ===============================
-// ABRIR MODAL PARA EDITAR
-// ===============================
-function abrirEditarVenta(id) {
-    const ventas = obtenerVentas();
-    const venta = ventas.find(v => v.id === id);
-
-    if (venta) {
-        document.getElementById('editarVentaId').value = String(venta.id);
-        document.getElementById('editarProducto').value = venta.producto;
-        document.getElementById('editarCantidad').value = venta.cantidad;
-        document.getElementById('editarPrecioUnitario').value = venta.precio;
-        document.getElementById('editarTotal').value = venta.total.toFixed(2);
-
-        const modal = new bootstrap.Modal(document.getElementById('editarVentaModal'));
-        modal.show();
-    }
-}
-
-// ===============================
-// GUARDAR CAMBIOS DE VENTA
-// ===============================
-document.getElementById('formEditarVenta').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const idValue = document.getElementById('editarVentaId').value;
-    const nuevaCantidad = parseInt(document.getElementById('editarCantidad').value);
-
-    if (nuevaCantidad <= 0) {
-        alert('La cantidad debe ser mayor a 0');
-        return;
-    }
-
-    let ventas = obtenerVentas();
-    const ventaIndex = ventas.findIndex(v => String(v.id) === String(idValue));
-
-    if (ventaIndex === -1) {
-        alert('Venta no encontrada');
-        return;
-    }
-
-    const ventaAnterior = ventas[ventaIndex];
-    const diferenciaCantidad = nuevaCantidad - ventaAnterior.cantidad;
-
-    // Verificar stock disponible
-    const productos = obtenerProductos();
-    const producto = productos.find(p => p.id === ventaAnterior.productoId);
-
-    if (producto && diferenciaCantidad > 0 && diferenciaCantidad > producto.cantidad) {
-        alert(`No hay suficiente stock disponible. Stock: ${producto.cantidad}`);
-        return;
-    }
-
-    // Actualizar la venta
-    ventaAnterior.cantidad = nuevaCantidad;
-    ventaAnterior.total = nuevaCantidad * ventaAnterior.precio;
-
-    guardarVentas(ventas);
-
-    // Ajustar inventario del producto
-    if (producto) {
-        producto.cantidad -= diferenciaCantidad;
-        guardarProductos(productos);
-    }
-
-    mostrarVentas();
-    bootstrap.Modal.getInstance(document.getElementById('editarVentaModal')).hide();
-    alert('Venta actualizada correctamente');
-});
-
-// ===============================
-// ELIMINAR/CANCELAR VENTA
-// ===============================
-function eliminarVenta(id) {
-    if (confirm('¿Deseas cancelar esta venta? Se devolverá el producto al inventario.')) {
-        let ventas = obtenerVentas();
-        const ventasAntes = ventas.length;
-        const ventaIndex = ventas.findIndex(v => v.id === id);
-
-        if (ventaIndex === -1) {
-            alert('Venta no encontrada');
-            return;
-        }
-
-        const venta = ventas[ventaIndex];
-
-        // Devolver cantidad al inventario
-        const productos = obtenerProductos();
-        const producto = productos.find(p => p.id === venta.productoId);
-
-        if (producto) {
-            producto.cantidad += venta.cantidad;
-            guardarProductos(productos);
-        }
-
-        // Eliminar venta
-        ventas.splice(ventaIndex, 1);
         
-        if (ventas.length < ventasAntes) {
-            guardarVentas(ventas);
-            cargarProductos();
-            mostrarVentas();
-            alert('Venta cancelada correctamente');
-        } else {
-            alert('No se pudo cancelar la venta');
+        let timeoutModificarCantidad;
+        
+        function modificarCantidadCarritoDebounced(productoId, nuevaCantidad) {
+            clearTimeout(timeoutModificarCantidad);
+            timeoutModificarCantidad = setTimeout(() => {
+                modificarCantidadCarrito(productoId, nuevaCantidad);
+            }, 100); // Esperar 100ms antes de ejecutar
         }
-    }
-}
 
-// ===============================
-// ACTUALIZAR RESUMEN
-// ===============================
-function actualizarResumen() {
-    const ventas = obtenerVentas();
-    let totalVentas = 0;
+        function agregarAlCarrito(productoId, nombre, precio, cantidad) {
+            let carrito = obtenerCarrito();
+            let producto = carrito.find(p => String(p.id) === String(productoId));
+            
+            if (producto) {
+                producto.cantidad += parseInt(cantidad);
+            } else {
+                carrito.push({
+                    id: productoId,
+                    nombre: nombre,
+                    precio: parseFloat(precio),
+                    cantidad: parseInt(cantidad)
+                });
+            }
+            
+            guardarCarrito(carrito);
+        }
 
-    ventas.forEach(venta => {
-        totalVentas += venta.total;
-    });
+        function eliminarDelCarrito(productoId) {
+            let carrito = obtenerCarrito();
+            carrito = carrito.filter(p => String(p.id) !== String(productoId));
+            guardarCarrito(carrito);
+        }
 
-    document.getElementById('totalVentas').textContent = '$' + totalVentas.toFixed(2);
-    document.getElementById('cantidadVentas').textContent = ventas.length;
-}
+        function modificarCantidadCarrito(productoId, nuevaCantidad) {
+            nuevaCantidad = parseInt(nuevaCantidad);
+            if(isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+                eliminarDelCarrito(productoId);
+                return;
+            }
+            
+            let carrito = obtenerCarrito();
+            // Convertir productoId a string para comparación consistente
+            let producto = carrito.find(p => String(p.id) === String(productoId));
+            
+            if(producto) {
+                producto.cantidad = nuevaCantidad;
+                guardarCarrito(carrito);
+            } else {
+                console.log('Producto no encontrado en carrito:', productoId, 'Carrito actual:', carrito);
+            }
+        }
 
-// ===============================
-// INICIALIZAR
-// ===============================
-cargarProductos();
-mostrarVentas();
-</script>
+        function guardarCarrito(carrito) {
+            localStorage.setItem(KEY_CARRITO, JSON.stringify(carrito));
+            actualizarTablaCarrito();
+            actualizarTotalCarrito();
+        }
+
+        function limpiarCarrito() {
+            localStorage.removeItem(KEY_CARRITO);
+            actualizarTablaCarrito();
+            actualizarTotalCarrito();
+        }
+
+        function calcularTotalCarrito() {
+            let carrito = obtenerCarrito();
+            return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        }
+
+        function actualizarTotalCarrito() {
+            let total = calcularTotalCarrito();
+            document.getElementById('totalCarrito').textContent = '$' + total.toFixed(2);
+            
+            let btnPagar = document.getElementById('btnPagar');
+            if(total > 0){
+                btnPagar.classList.remove('d-none');
+            } else {
+                btnPagar.classList.add('d-none');
+            }
+        }
+
+        function actualizarTablaCarrito() {
+            let carrito = obtenerCarrito();
+            let tabla = document.getElementById('tablaCarrito');
+            tabla.innerHTML = '';
+            
+            if(carrito.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="5" class="text-center text-muted">El carrito está vacío</td></tr>';
+                return;
+            }
+            
+            carrito.forEach(item => {
+                let fila = document.createElement('tr');
+                let totalItem = (parseFloat(item.precio) * parseInt(item.cantidad)).toFixed(2);
+                fila.innerHTML = `
+                    <td>${item.nombre}</td>
+                    <td>
+                        <input type="number" value="${item.cantidad}" min="1" class="form-control form-control-sm cantidad-carrito" 
+                               oninput="modificarCantidadCarritoDebounced('${item.id}', this.value)" onchange="modificarCantidadCarrito('${item.id}', this.value)">
+                    </td>
+                    <td>$${parseFloat(item.precio).toFixed(2)}</td>
+                    <td><strong>$${totalItem}</strong></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="eliminarDelCarrito('${item.id}')">Eliminar</button>
+                    </td>
+                `;
+                tabla.appendChild(fila);
+            });
+        }
+
+        // ===============================
+        // OBTENER PRODUCTOS
+        // ===============================
+        function obtenerProductos() {
+            const datos = localStorage.getItem(KEY_PRODUCTOS);
+            return datos ? JSON.parse(datos) : [];
+        }
+
+        // ===============================
+        // CARGAR SELECCIÓN DE PRODUCTOS
+        // ===============================
+        function cargarSelectProductos() {
+            let productos = obtenerProductos();
+            let select = document.getElementById('producto');
+            let alerta = document.getElementById('alertaNoProductos');
+            let btnSubmit = document.getElementById('formVenta').querySelector('button[type="submit"]');
+            
+            select.innerHTML = '<option value="">Seleccionar Producto...</option>';
+            
+            if (productos.length === 0) {
+                select.innerHTML += '<option disabled>No hay productos registrados. Ve a la sección de Productos para agregar algunos.</option>';
+                alerta.classList.remove('d-none');
+                btnSubmit.disabled = true;
+                return;
+            }
+            
+            alerta.classList.add('d-none');
+            btnSubmit.disabled = false;
+            
+            productos.forEach(p => {
+                let option = document.createElement('option');
+                option.value = JSON.stringify({id: p.id, nombre: p.nombre, precio: p.precio});
+                option.textContent = `${p.nombre} - $${p.precio.toFixed(2)}`;
+                select.appendChild(option);
+            });
+        }
+
+        // ===============================
+        // INICIALIZACIÓN
+        // ===============================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar productos y inicializar interfaz
+            cargarSelectProductos();
+            actualizarTablaCarrito();
+            actualizarTotalCarrito();
+            mostrarVentas();
+            
+            // Asignar eventos del formulario
+            document.getElementById('producto').addEventListener('change', function() {
+                if(this.value) {
+                    let datos = JSON.parse(this.value);
+                    document.getElementById('precio').value = datos.precio;
+                }
+            });
+
+            document.getElementById('formVenta').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let productoSelect = document.getElementById('producto');
+                if(!productoSelect.value) {
+                    alert('Selecciona un producto');
+                    return;
+                }
+                
+                let datos = JSON.parse(productoSelect.value);
+                let cantidad = parseInt(document.getElementById('cantidad').value);
+                
+                if(cantidad <= 0) {
+                    alert('La cantidad debe ser mayor a 0');
+                    return;
+                }
+                
+                agregarAlCarrito(datos.id, datos.nombre, datos.precio, cantidad);
+                
+                this.reset();
+                productoSelect.value = '';
+                document.getElementById('precio').value = '';
+                document.getElementById('cantidad').value = '1';
+                
+                alert('Producto agregado al carrito');
+            });
+
+            document.getElementById('btnLimpiarCarrito').addEventListener('click', function() {
+                if(confirm('¿Deseas limpiar el carrito?')) {
+                    limpiarCarrito();
+                }
+            });
+        });
+        function obtenerVentas() {
+            const datos = localStorage.getItem(KEY_VENTAS);
+            return datos ? JSON.parse(datos) : [];
+        }
+
+        function guardarVentas(ventas) {
+            localStorage.setItem(KEY_VENTAS, JSON.stringify(ventas));
+        }
+
+        function registrarVentasDelCarrito() {
+            let carrito = obtenerCarrito();
+            let ventas = obtenerVentas();
+            
+            if(carrito.length === 0) {
+                return;
+            }
+            
+            carrito.forEach(item => {
+                ventas.push({
+                    id: Date.now() + Math.random(),
+                    producto: item.nombre,
+                    cantidad: item.cantidad,
+                    precio: item.precio,
+                    total: item.precio * item.cantidad,
+                    fecha: new Date().toLocaleString(),
+                    metodoPago: localStorage.getItem('metodoPago') || 'pendiente'
+                });
+            });
+            
+            guardarVentas(ventas);
+            mostrarVentas();
+        }
+
+        function mostrarVentas() {
+            const ventas = obtenerVentas();
+            const tabla = document.getElementById('tablaVentas');
+            tabla.innerHTML = '';
+
+            if (ventas.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="6" class="text-center">No hay ventas registradas</td></tr>';
+                actualizarResumen();
+                return;
+            }
+
+            ventas.forEach(venta => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${venta.producto}</td>
+                    <td>${venta.cantidad}</td>
+                    <td>$${venta.precio.toFixed(2)}</td>
+                    <td>$${venta.total.toFixed(2)}</td>
+                    <td>${venta.fecha}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="eliminarVenta(${venta.id})">
+                            Cancelar
+                        </button>
+                    </td>
+                `;
+                tabla.appendChild(fila);
+            });
+
+            actualizarResumen();
+        }
+
+        function eliminarVenta(id) {
+            if(!confirm('¿Deseas cancelar esta venta?')) {
+                return;
+            }
+            
+            let ventas = obtenerVentas();
+            ventas = ventas.filter(v => v.id !== id);
+            guardarVentas(ventas);
+            mostrarVentas();
+        }
+
+        function actualizarResumen() {
+            const ventas = obtenerVentas();
+            let total = 0;
+            
+            ventas.forEach(v => {
+                total += v.total;
+            });
+            
+            document.getElementById('totalVentas').textContent = '$' + total.toFixed(2);
+            document.getElementById('cantidadVentas').textContent = ventas.length;
+        }
+
+    </script>
 
 </body>
 </html>
